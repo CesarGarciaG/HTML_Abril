@@ -1,10 +1,13 @@
 .nav {
-    background-color: black;
+    background-color: #141214;
     font-size: 1.1em;
     position: fixed;
     width: 100%;
     top: 0;
-    z-index: 2;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .nav li {
@@ -13,6 +16,8 @@
 }
 
 .nav .nav-item > a {
+    transition: background-color 0.3s, color 0.3s;
+    will-change: background-color, color;
     color: white;
     text-decoration: none;
     height: 100%;
@@ -24,14 +29,12 @@
 
 .nav .nav-item.nav-item--active > a, .nav .nav-item > a:hover {
     background-color: white;
-    color: black;
+    color: #141214;
 }
 
 .nav .nav-logo {
     display: inline-block;
-    position: relative;
-    left: 15px;
-    top: 8px;
+    margin-left: 20px;
 }
 
 .nav .nav-items {
@@ -43,5 +46,5 @@
 }
 
 .nav .nav-logo img {
-    height: 30px;
+    height: 50px;
 }

@@ -1,8 +1,22 @@
 #home {
     background-image: url(../assets/img/avengers.jpg);
+    background-size: cover;
+    background-position: 50% 50%;
     height: calc(100vh - 56px);
     width: 100vw;
     margin-top: 54px;
+}
+
+#home:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-top: 16px;
 }
 
 #home h1 {

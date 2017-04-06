@@ -27,6 +27,7 @@ form button[type="submit"] {
 }
 
 .form-input input, .form-input textarea {
+    transition: border-color 0.3s ease-in-out;
     border-radius: 8px;
     border: 2px solid #ccc;
     font-size: 0.6em;
@@ -47,6 +48,8 @@ form button[type="submit"] {
 }
 
 .button {
+    transition: border-color 0.3s ease-in-out, transform 0.2s;
+    will-change: border-color, transform;
     background-color: white;
     border: 2px solid #ddd;
     padding: 10px 15px;
@@ -55,14 +58,19 @@ form button[type="submit"] {
     cursor: pointer;
 }
 
+.button:hover {
+    transform: scale(1.2);
+}
+
 .button:hover, .button:focus {
-    border-color: #bbb;
+    border-color: #999;
     outline: none;
 }
 
 .button:active {
+    transform: scale(0.9);
     color: white;
-    background-color: #999;
+    background-color: #777;
 }
 
 .button:disabled {
