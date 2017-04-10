@@ -276,105 +276,164 @@ $(document).scroll(function(event) {
 
 
     // PROMESAS EJECUTADAS EN PARALELO
-    var promises = [];
+    // var promises = [];
 
-    for (var i = 1; i < 10; i++) {
-        var promise = $.ajax({
+    // for (var i = 1; i < 10; i++) {
+    //     var promise = $.ajax({
+    //         dataType: 'json',
+    //         url: root + '/posts/' + i,
+    //         method: 'GET'
+    //     });
+    //     promises.push(promise);
+    // }
+
+    // // Esperamos a que todas las promesas terminen
+    // Promise.all(promises).then(function(responses) {
+    //     var html = responses.reduce(function(total, response) {
+    //         return total + '<li><h2>' + response.title + '</h2><p>' + response.body + '</p></li>';
+    //     }, '');
+    //     $('#about-us').append(html);
+    // }).catch(function(error) {
+    //     console.log(arguments);
+    // }.bind(this));
+
+    // // Esperamos a que la primera promesa termine
+    // Promise.race(promises).then(function() {
+    //     // first finished
+    // }).catch(function() {
+    //     // first with error
+    // });
+
+
+    // // PROMESAS EJECUTADAS EN SERIE
+    // var promise1 = $.ajax({
+    //     dataType: 'json',
+    //     url: root + '/posts/1',
+    //     method: 'GET'
+    // });
+
+    // var promise2 = $.ajax({
+    //     dataType: 'json',
+    //     url: root + '/posts/2',
+    //     method: 'GET'
+    // });
+
+    // var promise3 = $.ajax({
+    //     dataType: 'json',
+    //     url: root + '/posts/3',
+    //     method: 'GET'
+    // });
+
+    // promise2.catch(function() {});
+    // promise3.catch(function() {});
+
+    // function doStuff() {
+    //     promise1.then(function() {
+    //         return promise2;
+    //     }).then(function() {
+    //         return promise3;
+    //     }).then(function() {
+    //         // your code
+    //         return 10;
+    //     }).catch(function() {
+    //         // handle error
+    //     })
+    // }
+
+    // var quickPromise = Promise.resolve(true);
+    // quickPromise.then(function(response) {
+    //     return response ? 10 : 0;
+    // }).then(function(response) {
+    //     return response > i ? {} : [];
+    // });
+
+    // // Ejemplo de promesa en serie
+    // function login(username, password, provider) {
+    //     return loginProvider(username, password, provider).then(function(responseFB) {
+    //         return loginOauth(responseFB);
+    //     }).then(function(responseOauth) {
+    //         return loginWithServer(responseOauth);
+    //     }).then(function(response) {
+    //         return setLoggedIn(response);
+    //     }).then(function() {
+    //         return getLoggedInUser();
+    //     });
+    // }
+
+
+
+    // doStuff().then(function(response) {
+    //     // 10
+    // });
+
+    // var createdPromise = new Promise(function(resolve, reject) {
+    //     setTimeout(function() {
+    //         // hacer cosas y reject si es necesario
+    //         resolve('magic');
+    //     }, 5000);
+    // });
+
+    // createdPromise.then(function(response) {
+    //     // 'magic'
+    // });
+
+
+    // SISTEMA DE ACCESOS AL BACK-END
+
+    var data = {
+        'userId': 1,
+        'title': 'My post',
+        'body': 'post body'
+    };
+
+    var services = {
+        root: 'https://jsonplaceholder.typicode.com';
+        getPosts: getPosts,
+        createPost: createPost,
+        updatePost: updatePost,
+        deletePost: deletePost
+    };
+
+    function getPosts(postId) {
+        return $.ajax({
+            type: 'GET',
             dataType: 'json',
-            url: root + '/posts/' + i,
-            method: 'GET'
+            url: this.root + '/posts/' + postId
         });
-        promises.push(promise);
     }
 
-    // Esperamos a que todas las promesas terminen
-    Promise.all(promises).then(function(responses) {
-        var html = responses.reduce(function(total, response) {
-            return total + '<li><h2>' + response.title + '</h2><p>' + response.body + '</p></li>';
-        }, '');
-        $('#about-us').append(html);
-    }).catch(function(error) {
-        console.log(arguments);
-    }.bind(this));
-
-    // Esperamos a que la primera promesa termine
-    Promise.race(promises).then(function() {
-        // first finished
-    }).catch(function() {
-        // first with error
-    });
-
-
-    // PROMESAS EJECUTADAS EN SERIE
-    var promise1 = $.ajax({
-        dataType: 'json',
-        url: root + '/posts/1',
-        method: 'GET'
-    });
-
-    var promise2 = $.ajax({
-        dataType: 'json',
-        url: root + '/posts/2',
-        method: 'GET'
-    });
-
-    var promise3 = $.ajax({
-        dataType: 'json',
-        url: root + '/posts/3',
-        method: 'GET'
-    });
-
-    promise2.catch(function() {});
-    promise3.catch(function() {});
-
-    function doStuff() {
-        promise1.then(function() {
-            return promise2;
-        }).then(function() {
-            return promise3;
-        }).then(function() {
-            // your code
-            return 10;
-        }).catch(function() {
-            // handle error
-        })
+    function createPost(data) {
+        return $.ajax({
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            url: this.root + '/posts',
+            data: JSON.stringify(data)
+        });
     }
 
-    var quickPromise = Promise.resolve(true);
-    quickPromise.then(function(response) {
-        return response ? 10 : 0;
+    function updatePost(id, data) {
+        return $.ajax({
+            type: 'PUT',
+            contentType: 'application/json; charset=utf-8',
+            url: this.root + '/posts' + id,
+            data: JSON.stringify(data)
+        });
+    }
+
+    function deletePost(id) {
+        return $.ajax({
+            type: 'DELETE',
+            url: this.root + '/posts' + id
+        });
+    }
+
+    services.createPost(data).then(function(response) {
+        console.log('POST', response);
+        return services.getPosts(1);
     }).then(function(response) {
-        return response > i ? {} : [];
+        console.log('GET', response);
+    }).catch(function(error) {
+        console.error('POST', error);
     });
-
-    // Ejemplo de promesa en serie
-    function login(username, password, provider) {
-        return loginProvider(username, password, provider).then(function(responseFB) {
-            return loginOauth(responseFB);
-        }).then(function(responseOauth) {
-            return loginWithServer(responseOauth);
-        }).then(function(response) {
-            return setLoggedIn(response);
-        }).then(function() {
-            return getLoggedInUser();
-        });
-    }
-
-
-
-    doStuff().then(function(response) {
-        // 10
-    });
-
-    var createdPromise = new Promise(function(resolve, reject) {
-        setTimeout(function() {
-            // hacer cosas y reject si es necesario
-            resolve('magic');
-        }, 5000);
-    });
-
-    createdPromise.then(function(response) {
-        // 'magic'
-    })
 
 })();
