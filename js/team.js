@@ -2,7 +2,7 @@
 
 // Immediately-invoked function: creamos un contexto gratis para tener más seguridad
 
-(function() {
+$(document).ready(function() {
     document.querySelector('#team .caption').addEventListener('click', function() {
         console.log(this);
         event.stopPropagation();
@@ -23,4 +23,4 @@
 
         document.body.appendChild(btn);
     }
-})();
+});

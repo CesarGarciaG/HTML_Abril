@@ -184,14 +184,197 @@ compra.forEach(function(item) {
 });
 compraListNode.appendChild(compraListNodeVirtual); */
 
-var array = document.querySelectorAll('.nav a'); // Devuelve un NodeList
+/*var array = document.querySelectorAll('.nav a'); // Devuelve un NodeList
 var newArray = Array.prototype.slice.call(array, 0); // Transformamos NodeList en Array
 newArray.map(function(item) {
     item.style.color = 'red';
-});
+});*/
 
 function argumentsArray() {
     console.log(arguments);
 }
 
 argumentsArray(1, 2, 3, 14);
+
+/*(function() {
+    console.log(1);
+    setTimeout(function() {
+        console.log(2)
+    }, 1000);
+    setTimeout(function() {
+        console.log(3)
+    }, 0);
+    console.log(4);
+})();*/
+
+for (var i = 0; i < 5; i++) {
+    (function(index) {
+        setTimeout(function() {
+            console.log(index);
+        }, i * 1000);
+    })(i);
+}
+
+//clearTimeout(timeout);
+
+
+/**
+ * EJEMPLOS JQUERY
+ */
+
+$('button').click(function(event) {
+    console.log(event);
+    $('nav a').css('color', 'green');
+    console.log(this);
+    $(this).css('color', 'blue');
+    // this (o event.target) es el elemento que provoca el evento
+});
+
+// $(document).ready() crea otro contexto
+$(document).ready(function() {
+    $('.nav-item a').mouseover(function(event) {
+        console.log($(this).attr('href'));
+    });
+});
+
+
+$(document).scroll(function(event) {
+    requestAnimationFrame(function() {
+        $('header').css('top', window.superCalculus);
+    });
+});
+
+
+/**
+ * CONSULTAS AJAX
+ */
+
+(function() {
+    var root = 'https://jsonplaceholder.typicode.com';
+
+    // Callback
+    /*$.ajax({
+        dataType: 'json',
+        url: root + '/posts/1',
+        method: 'GET',
+        success: function() {},
+        error: function() {}
+    });*/
+
+    // Promesas
+    // var promise = $.ajax({
+    //     dataType: 'json',
+    //     url: root + '/posts/1',
+    //     method: 'GET'
+    // });
+
+    // promise.then(function(response) {
+    //     console.log(response);
+    // }).catch(function(error) {
+    //     console.log(error);
+    // });
+
+
+    // PROMESAS EJECUTADAS EN PARALELO
+    var promises = [];
+
+    for (var i = 1; i < 10; i++) {
+        var promise = $.ajax({
+            dataType: 'json',
+            url: root + '/posts/' + i,
+            method: 'GET'
+        });
+        promises.push(promise);
+    }
+
+    // Esperamos a que todas las promesas terminen
+    Promise.all(promises).then(function(responses) {
+        var html = responses.reduce(function(total, response) {
+            return total + '<li><h2>' + response.title + '</h2><p>' + response.body + '</p></li>';
+        }, '');
+        $('#about-us').append(html);
+    }).catch(function(error) {
+        console.log(arguments);
+    }.bind(this));
+
+    // Esperamos a que la primera promesa termine
+    Promise.race(promises).then(function() {
+        // first finished
+    }).catch(function() {
+        // first with error
+    });
+
+
+    // PROMESAS EJECUTADAS EN SERIE
+    var promise1 = $.ajax({
+        dataType: 'json',
+        url: root + '/posts/1',
+        method: 'GET'
+    });
+
+    var promise2 = $.ajax({
+        dataType: 'json',
+        url: root + '/posts/2',
+        method: 'GET'
+    });
+
+    var promise3 = $.ajax({
+        dataType: 'json',
+        url: root + '/posts/3',
+        method: 'GET'
+    });
+
+    promise2.catch(function() {});
+    promise3.catch(function() {});
+
+    function doStuff() {
+        promise1.then(function() {
+            return promise2;
+        }).then(function() {
+            return promise3;
+        }).then(function() {
+            // your code
+            return 10;
+        }).catch(function() {
+            // handle error
+        })
+    }
+
+    var quickPromise = Promise.resolve(true);
+    quickPromise.then(function(response) {
+        return response ? 10 : 0;
+    }).then(function(response) {
+        return response > i ? {} : [];
+    });
+
+    // Ejemplo de promesa en serie
+    function login(username, password, provider) {
+        return loginProvider(username, password, provider).then(function(responseFB) {
+            return loginOauth(responseFB);
+        }).then(function(responseOauth) {
+            return loginWithServer(responseOauth);
+        }).then(function(response) {
+            return setLoggedIn(response);
+        }).then(function() {
+            return getLoggedInUser();
+        });
+    }
+
+
+
+    doStuff().then(function(response) {
+        // 10
+    });
+
+    var createdPromise = new Promise(function(resolve, reject) {
+        setTimeout(function() {
+            // hacer cosas y reject si es necesario
+            resolve('magic');
+        }, 5000);
+    });
+
+    createdPromise.then(function(response) {
+        // 'magic'
+    })
+
+})();
